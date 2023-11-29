@@ -11,15 +11,22 @@ the application can be run in a container or as a process.
 
 # Installation
 ## Run as a process
+'''
+sudo pip install git+https://https://github.com/EHerzog76/ModbusGW.git
+
 python3 pyModbusGW.py /dev/ttyUSB0
+'''
 
 ## Run in a container
+
+# Usage example
 
 
 # Other Modbus - Projects
 https://github.com/M3m3M4n/modbus-fuzz-note
 https://github.com/Bouni/ModBusGateway
 https://pymodbustcp.readthedocs.io/en/latest/examples/server_serial_gw.html
+https://github.com/sourceperl/pyModbusTCP/tree/master
 https://github.com/RT-Thread-packages/freemodbus/tree/master
 https://github.com/eModbus/eModbus/tree/master
 https://github.com/epsilonrt/mbpoll
