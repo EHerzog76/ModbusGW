@@ -11,11 +11,11 @@ the application can be run in a container or as a process.
 
 # Installation
 ## Run as a process
-'''
+```
 sudo pip install git+https://https://github.com/EHerzog76/ModbusGW.git
 
 python3 pyModbusGW.py /dev/ttyUSB0
-'''
+```
 
 ## Run in a container
 
