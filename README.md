@@ -18,10 +18,9 @@ python3 pyModbusGW.py /dev/ttyUSB0
 ```
 
 ## Run in a container
-1. Run as a daemon process:
+1. Run as a process:
   ```sh
-  docker run --rm -it -p 502:502 -e 
-  docker run -d -p 502:502 ... -t eherzog/modbus-gw
+  docker run --rm -it -p 502:502 -e SERIAL_DEVICE=/dev/ttyUSB0 eherzog/modbus-gw 
   ```
 
 # Usage example
