@@ -1,0 +1,42 @@
+version: "3.7"
+services:
+  modbusgw:
+    image: 10.0.0.121:5000/eherzog76/modbusgw
+    domainname: thbweb.local
+    hostname: modbusgw
+    environment:
+      - TZ=Europe/Vienna
+      - SERIAL_DEVICE=/dev/ttyUSB0
+      - LISTEN_ADDRESS=0.0.0.0
+      - PORT=502
+      - SERIAL_BAUDRATE=19200
+      - SERIAL_TIMEOUT=1.0
+      - SERIAL_WAITTIME=100
+      - SERIAL_EOF=0.05
+      - MQTT_HOST=
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=modbus
+      - MQTT_CLIENTID=pyRS485GW
+      - MQTT_USER=usr
+      - MQTT_PWD=***
+      - MQTT_VERSION=MQTTv5
+      #- DEBUG=True
+    ports:
+      - "502:502"
+    networks:
+      - frontend
+#    volumes:
+#      - /Containers/modbusgw/cfg_disk:/etc/
+    devices:
+      - /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AB0PY96J-if00-port0:/dev/ttyUSB0
+      #- /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AB0PY96J-if00-port0:/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AB0PY96J-if00-port0
+    group_add:
+      - dialout
+    privileged: true
+    restart: always
+
+networks:
+  default:
+  frontend:
+    name: frontend
+    external: true

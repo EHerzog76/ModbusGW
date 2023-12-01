@@ -1,0 +1,5 @@
+Projects:
+=========
+	https://github.com/sourceperl/pyModbusTCP.git
+	https://github.com/pymodbus-dev/pymodbus
+	https://github.com/Bouni/ModBusGateway
