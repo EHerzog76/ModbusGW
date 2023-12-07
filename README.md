@@ -22,6 +22,15 @@ python3 pyModbusGW.py /dev/ttyUSB0
   ```sh
   docker run --rm -p 502:502 -e SERIAL_DEVICE=/dev/ttyUSB0 eherzog/modbus-gw 
   ```
+2. Run as daemon:
+  ```sh
+  docker run -d \
+       --restart unless-stopped \
+       --privileged \
+       -p 502:502 \
+       -e SERIAL_DEVICE=/dev/ttyUSB0 \
+       eherzog/modbus-gw
+  ```
 
 # Usage example
 
