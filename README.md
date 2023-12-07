@@ -4,7 +4,7 @@ ModbusGW is a Modbus TCP and MQTT gateway to Modbus rs485 for RTU and ASCII.
 # Features
 ModbusGW is an easy-to-use Python application,
 which is a gateway from
-.. ModbusRTU-TCP to Modbus rs485 RTU and ASCII
+.. ModbusTCP to Modbus rs-485 RTU and ASCII
 .. MQTT to Modbus rs-485 for RTU and ASCII
 
 the application can be run in a container or as a process.
@@ -20,7 +20,7 @@ python3 pyModbusGW.py /dev/ttyUSB0
 ## Run in a container
 1. Run as a process:
   ```sh
-  docker run --rm -it -p 502:502 -e SERIAL_DEVICE=/dev/ttyUSB0 eherzog/modbus-gw 
+  docker run --rm -p 502:502 -e SERIAL_DEVICE=/dev/ttyUSB0 eherzog/modbus-gw 
   ```
 
 # Usage example
@@ -59,6 +59,31 @@ SERIAL_DEVICE=/dev/ttyUSB0;/dev/ttyUSB1
 SERIAL_BAUDRATE=19200;9600
 ```
 
+# for Developers
+This project is written in python and is based on the project:
+https://github.com/sourceperl/pyModbusTCP/
+
+As starting point I used the serial-gw example:
+https://github.com/sourceperl/pyModbusTCP/blob/master/examples/server_serial_gw.py
+
+I rewrite the pyModbusTCP to use the asyncio library instead of the threading-server implementation.
+
+# Dependencies
+pyserial
+paho-mqtt
+
+
+In the future it is posible that
+    paho-mqtt  will be replaced with: asyncio-mqtt
+
+In python you have 2 projects for serial-port communication.
+.. serial
+.. pyserial
+But in this project only pyserial works well, because the serial project is not compatible with the json-implementation.
+
+# TODO
+.. ASCII protocol testing
+
 # Other Modbus - Projects
 https://github.com/M3m3M4n/modbus-fuzz-note
 https://github.com/Bouni/ModBusGateway
@@ -69,6 +94,7 @@ https://github.com/eModbus/eModbus/tree/master
 https://github.com/epsilonrt/mbpoll
 https://github.com/burakdereli/Modbus-Slave-RTU-ASCII/tree/master
 https://github.com/ClassicDIY/ModbusTool/tree/master
+https://github.com/simonvetter/modbus/
 https://github.com/3cky/mbusd/tree/master
 https://docs.edgexfoundry.org/3.0/getting-started/Ch-GettingStartedDockerUsers/
 https://github.com/emqx/neuron
