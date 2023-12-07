@@ -24,6 +24,7 @@ python3 pyModbusGW.py /dev/ttyUSB0
   ```
 
 # Usage example
+
 ## Environment variables / Parameters
 |Env-Name|Param-Name|Default Value|Description|
 |---|---|---|---|
@@ -48,6 +49,16 @@ python3 pyModbusGW.py /dev/ttyUSB0
 |LOG_LEVEL | -g --log|INFO |Loglevel: Debug, Info, Warning, Error, Critical see python logging 
 |DEBUG | -d --debug|False |Activate Debug-Output
 
+All serial timing parameters are calculated based on the baudrate and the Bits per Char.
+So SERIAL_WAITTIME is only needed if your modbus devices need a longer time delay between the read/write requests.
+
+To use more then one serial bus you can seperate all SERIAL_ parameters with a ```;```
+e.g.:
+```
+SERIAL_DEVICE=/dev/ttyUSB0;/dev/ttyUSB1
+SERIAL_BAUDRATE=19200;9600
+```
+
 # Other Modbus - Projects
 https://github.com/M3m3M4n/modbus-fuzz-note
 https://github.com/Bouni/ModBusGateway
@@ -59,3 +70,5 @@ https://github.com/epsilonrt/mbpoll
 https://github.com/burakdereli/Modbus-Slave-RTU-ASCII/tree/master
 https://github.com/ClassicDIY/ModbusTool/tree/master
 https://github.com/3cky/mbusd/tree/master
+https://docs.edgexfoundry.org/3.0/getting-started/Ch-GettingStartedDockerUsers/
+https://github.com/emqx/neuron
