@@ -1,3 +1,2 @@
-pyModbusTCP
 paho-mqtt
 pyserial

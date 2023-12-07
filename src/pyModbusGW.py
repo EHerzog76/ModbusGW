@@ -12,7 +12,7 @@ sudo pip install git+https://github.com/sourceperl/pyModbusTCP.git@v0.2.1
 
 """
 Modbus/TCP basic gateway (RTU slave(s) attached)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [pyModbusTCP server] -> [ModbusSerialWorker] -> [serial RTU devices]
 
@@ -30,7 +30,8 @@ import binascii
 import time
 import random
 import threading
-from queue import Queue
+from queue import Queue, Full, Empty
+import asyncio
 from pyModbusTCP.server import ModbusServer
 from pyModbusTCP.utils import crc16
 from pyModbusTCP.constants import EXP_GATEWAY_PATH_UNAVAILABLE, EXP_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND
@@ -565,6 +566,10 @@ class ModbusSerialWorker:
         # accept 256 simultaneous requests before overloaded exception is return
         self.rtu_queries_q = wrkData.MqQueue
 
+    def run(self):
+        wrkLoop = threading.Thread(target=self.loop)
+        wrkLoop.start()
+
     def loop(self):
         while self.serial_port is None:
             try:
@@ -710,7 +715,7 @@ class ModbusSerialWorker:
                 return
             # except status for slave failed to respond
             exp_status = EXP_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND
-        except queue.Full:
+        except Full:
             # except status for overloaded gateway
             exp_status = EXP_GATEWAY_PATH_UNAVAILABLE
         # return modbus exception
@@ -951,12 +956,20 @@ if __name__ == '__main__':
             mqClient.loop_start()     # ToDo: implement   mqClient.loop_stop() for gracefull shutdown
             mqClient.subscribe(MqTopic, qos=0)
 
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        #evLoops = []
         for i in range(len(SerialDevices)):
+            #evLoops.append(asyncio.new_event_loop())
             WorkerArray[i].mqClient = mqClient
             WorkerArray[i].srv.start()
             # start serial worker loop
             logger.debug('Start serial worker: ' + WorkerArray[i].SerialName)
-            WorkerArray[i].serial_worker.loop()
+            WorkerArray[i].serial_worker.run()
+        logger.info("ModbusGW is online.")
+        loop.run_forever()
+        logger.info("ModbusGW is shutdown.")
     except ModbusServer.Error as e:
         logger.critical('Modbus server error: %r', e)
+        logger.info("ModbusGW is shutdown.")
         exit(1)
