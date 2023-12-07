@@ -80,5 +80,6 @@ ENV LOG_LEVEL=INFO
 #	ls -alh /venv/lib/python3.10/site-packages/serial/ && \
 #	cat /venv/lib/python3.10/site-packages/serial/__init__.py
 
-ENTRYPOINT ["/venv/bin/python3", "-m", "/app/pyModbusGW"]
+WORKDIR /app
+ENTRYPOINT ["/venv/bin/python3", "-m", "pyModbusGW"]
 CMD [ "/dev/ttyUSB0"]
