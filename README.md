@@ -14,7 +14,7 @@ the application can be run in a container or as a process.
 ```
 sudo pip install git+https://https://github.com/EHerzog76/ModbusGW.git
 
-python3 pyModbusGW.py /dev/ttyUSB0
+python3 -m pyModbusGW /dev/ttyUSB0
 ```
 
 ## Run in a container
@@ -31,6 +31,11 @@ python3 pyModbusGW.py /dev/ttyUSB0
        -e SERIAL_DEVICE=/dev/ttyUSB0 \
        eherzog/modbus-gw:alpine-latest
   ```
+  3. Run with docker compose:
+    Edit the ```compose.yml``` to your needs and use it with:
+    ```sh
+    docker compose up -d
+    ```
 
 # Usage example
 
@@ -50,7 +55,7 @@ python3 pyModbusGW.py /dev/ttyUSB0
 |SERIAL_EOF | -e --eof|0.05 |Not used
 |MQTT_HOST | -M --mqtthost| |Connect to MQTT-Host only when set
 |MQTT_PORT | -q --mqttport|1883 |
-|MQTT_TOPIC | -T --mqtttopic|modbus |
+|MQTT_TOPIC | -T --mqtttopic|modbus |MQTT topic to use
 |MQTT_CLIENTID | -i --mqttclientid|pyRS485GW |MQTT client-id prefix
 |MQTT_USER | -u --mqttuser|usr |Only login to MQTT-Host if set
 |MQTT_PWD | -s --mqttpwd| |
@@ -67,6 +72,23 @@ e.g.:
 SERIAL_DEVICE=/dev/ttyUSB0;/dev/ttyUSB1
 SERIAL_BAUDRATE=19200;9600
 ```
+
+# MQTT
+To receive and publish the modbus commands over MQTT use the ```MQTT_``` parameters.
+## MQTT message syntax
+### MQTT subscribe message format
+topic/DeviceID/SlaveID/Function-Code
+     payload: {"Adr": 123, "Value": "..."}
+
+     topic...........is defined by MQTT_TOPIC
+     DeviceID........The index of your serial device. (The 1st Device e.g. /dev/ttyUSB0 has the index: 0)
+     SlaveID.........The SlaveID of the modbus device, with which you would like to communicate.
+     Function-Code...The modbus Function code e.g.: 01, 03, 05, 06, ...
+
+### MQTT pulish message format
+topic/DeviceID/SlaveID/Function-Code
+     payload: {"value": "PDU", "slave_id": "SlaveID", "fc": FC}
+
 
 # for Developers
 This project is written in python and is based on the project:
