@@ -645,7 +645,8 @@ class ModbusSerialWorker:
                                 rx_raw = rx_chunk
                             else:
                                 rx_raw += rx_chunk
-                    self.recvFrame.raw += rx_raw
+                    if not rx_raw is None:
+                        self.recvFrame.raw += rx_raw
                     if self.asciiFrame:
                         self.asciiFrame.buildFromASCII()
                     #logger.debug('Serial read: %s', bytes.hex(self.recvFrame.raw))
