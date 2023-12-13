@@ -10,7 +10,7 @@ which is a gateway from
 the application can be run in a container or as a process.
 
 # Installation
-## Run as a process
+## Run as a process (only for advanced users)
 ```
 sudo pip install git+https://https://github.com/EHerzog76/ModbusGW.git
 
@@ -38,6 +38,17 @@ python3 -m pyModbusGW /dev/ttyUSB0
     ```
 
 # Usage example
+## Run as process with MQTT in Debug mode
+```sh
+python3 -m pyModbusGW /dev/ttyUSB0 -g DEBUG -M mqtt-server.your.domain -u mqttuser -s mqtt-password -q 1883
+```
+## Run as process with 2 serial devices and use different serial baud rates and waittime
+```sh
+python3 -m pyModbusGW /dev/ttyUSB0;/dev/ttyUSB1 -b 19200;115200 -w 0;100
+```
+The ModbusTCP ports for serial device:
+1. /dev/ttyUSB0 is TCP 502
+2. /dev/ttyUSB1 is TCP 503
 
 ## Environment variables / Parameters
 |Env-Name|Param-Name|Default Value|Description|
