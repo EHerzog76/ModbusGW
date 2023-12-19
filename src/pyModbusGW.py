@@ -847,7 +847,7 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--stopbits', type=str, default='1', help='serial stopbits (default is 1)')
     parser.add_argument('-F', '--frametype', type=str, default='RTU', help='Frametype RTU, ASCII (default: RTU)')
     parser.add_argument('-t', '--timeout', type=float, default=1.0, help='timeout delay (default is 1.0 s)')
-    parser.add_argument('-w', '--waittime', type=int, default=0, help='serial waittime delay (default is 0ms)')
+    parser.add_argument('-w', '--waittime', type=str, default="0", help='serial waittime delay (default is 0ms)')
     parser.add_argument('-e', '--eof', type=float, default=0.05, help='end of frame delay (default is 0.05 s)')
     parser.add_argument('-M', '--mqtthost', type=str, default=None, help='mqtthost (default: None)')
     parser.add_argument('-q', '--mqttport', type=int, default=1883, help='TCP mqtt-port (default: 1883)')
@@ -872,7 +872,7 @@ if __name__ == '__main__':
     args.stopbits = os.environ.get('SERIAL_STOPBITS', args.stopbits)
     args.frametype = os.environ.get('SERIAL_FRAMETYPE', args.frametype)
     args.timeout = float(os.environ.get('SERIAL_TIMEOUT', args.timeout))
-    args.waittime = int(os.environ.get('SERIAL_WAITTIME', args.waittime))
+    args.waittime = os.environ.get('SERIAL_WAITTIME', args.waittime)
     args.eof = os.environ.get('SERIAL_EOF', args.eof)
     args.mqtthost = os.environ.get('MQTT_HOST', args.mqtthost)
     args.mqttport = int(os.environ.get('MQTT_PORT', args.mqttport))
@@ -904,33 +904,35 @@ if __name__ == '__main__':
     SerialParities = args.parity.split(";")
     SerialStopbits = args.stopbits.split(";")
     SerialFrameTypes = args.frametype.split(";")
+    SerialWaitTimes = args.waittime.split(";")
     WrkCount = len(SerialDevices)
     baudRate = "19200"
     byteSize = "8"
     Parity = "N"
     stopBits = "1"
     frameType = "RTU"
+    wTime = 0
     for i in range(len(SerialDevices)):
         if i < len(SerialBaudrates):
             baudRate = SerialBaudrates[i]
         else:
-            baudRate = "19200"
+            baudRate = SerialBaudrates[0]
         if i < len(SerialBytesizes):
             byteSize = SerialBytesizes[i]
         else:
-            byteSize = "19200"
+            byteSize = SerialBytesizes[0]
         if i < len(SerialParities):
             Parity = SerialParities[i]
         else:
-            Parity = "19200"
+            Parity = SerialParities[0]
         if i < len(SerialStopbits):
             stopBits = SerialStopbits[i]
         else:
-            stopBits = "19200"
+            stopBits = SerialStopbits[0]
         if i < len(SerialFrameTypes):
             frameType = SerialFrameTypes[i]
         else:
-            frameType = "RTU"
+            frameType = SerialFrameTypes[0]
         WorkerArray.append(WorkerData(baudRate, byteSize, Parity, stopBits, frameType))
         WorkerArray[i].ix = i
         WorkerArray[i].SerialName = SerialDevices[i]
@@ -940,7 +942,11 @@ if __name__ == '__main__':
         # init serial port
         for i in range(len(SerialDevices)):
             # init serial worker
-            WorkerArray[i].serial_worker = ModbusSerialWorker(WorkerArray[i], args.timeout, args.waittime, args.eof)
+            if i < len(SerialWaitTimes):
+                wTime = float(SerialWaitTimes[i])
+            else:
+                wTime = float(SerialWaitTimes[0])
+            WorkerArray[i].serial_worker = ModbusSerialWorker(WorkerArray[i], args.timeout, wTime, args.eof)
             # start modbus server with custom engine
             logger.info('Start modbus server ({0}, {1:d} for serial device: {2}'.format(args.listen, args.port+i, SerialDevices[i]))
             WorkerArray[i].srv = ModbusServer(host=args.listen, port=args.port+i,
