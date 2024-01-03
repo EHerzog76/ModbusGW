@@ -692,6 +692,10 @@ class ModbusSerialWorker:
                 self.rtu_queries_q.task_done()
             except serial.serialutil.SerialException as e:
                 logger.critical('Serial device {0} error: {1}'.format(self.session.SerialName, e))
+                if isinstance(rtu_query, RtuQuery):
+                    rtu_query.response.raw = b''
+                    rtu_query.completed.set()
+                self.rtu_queries_q.task_done()
 
     def srv_engine_entry(self, session_data):
         """Server engine entry point (pass request to serial worker queries queue).
