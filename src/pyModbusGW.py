@@ -591,8 +591,8 @@ class ModbusSerialWorker:
                     self.asciiFrame.buildFromRTU()
                 # send to serial
                 if not self.serial_port.is_open:
-                    self.serial_port = open_serial(self.session.SerialName, Bauds=self.session.baudrate,
-                         ByteSize=self.session.bytesize, StopBits=self.session.stopbits, Parity=self.session.parity)
+                    #self.serial_port.close()
+                    self.serial_port.open()
                 self.serial_port.reset_input_buffer()
                 # Check Serial Waittime before sending data
                 tEnd = time.perf_counter()
@@ -979,4 +979,4 @@ if __name__ == '__main__':
     except ModbusServer.Error as e:
         logger.critical('Modbus server error: %r', e)
         logger.info("ModbusGW is shutdown.")
-        exit(1)
+        sys.exit(1)
