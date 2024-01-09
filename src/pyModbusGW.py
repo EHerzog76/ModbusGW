@@ -614,7 +614,11 @@ class ModbusSerialWorker:
                 recvStart = time.perf_counter()
                 rx_raw = self.serial_port.read(self.recvFrame.read_byte_start)
                 # if ok, wait for the remaining
-                if rx_raw:
+                if rx_raw is None:
+                    pass
+                elif len(rx_raw) < self.recvFrame.read_byte_start:
+                    pass
+                else:
                     self.recvFrame.raw = rx_raw
                     rx_raw = None
                     if self.recvFrame.function_code == 24:
